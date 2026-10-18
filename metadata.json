@@ -1,0 +1,6 @@
+{
+  "name": "Đường Đua Kịch Tính - Cô giáo Hà Thanh Thuỷ",
+  "description": "Trò chơi Đua bi gọi tên ngẫu nhiên dành cho Cô giáo Hà Thanh Thuỷ - THPT Lương Ngọc Quyến gọi học sinh lên bảng nghiệm thu thực hành.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

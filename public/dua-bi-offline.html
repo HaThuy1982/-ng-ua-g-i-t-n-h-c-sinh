@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gọi Tên Học Sinh - Cô giáo Hà Thanh Thuỷ | THPT Lương Ngọc Quyến</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      background: radial-gradient(circle at 50% 20%, #101c42 0%, #080e22 60%, #030611 100%);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(180deg, rgba(16, 28, 66, 0.95) 0%, rgba(8, 14, 34, 0.85) 100%);
+      border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+    .brand-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .main-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #fff2b2 0%, #ffd700 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sub-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #93c5fd;
+      text-transform: uppercase;
+    }
+
+    /* Actions */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      color: #f1f5f9;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .btn:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: #ffd700;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #ffd700 0%, #e5a710 100%);
+      color: #070c1e;
+      border: 1px solid #ffe875;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 9px 24px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.6);
+    }
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #ffe033 0%, #f5b316 100%);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.65);
+      transform: translateY(-2px) scale(1.02);
+    }
+    .btn-gold:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Main Container */
+    .main-content {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Canvas Wrapper */
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: #050917;
+    }
+    canvas {
+      display: block;
+      background: #080e22;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(212, 175, 55, 0.25);
+    }
+
+    /* Drawer / Side panel for names */
+    .side-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 340px;
+      background: rgba(8, 14, 34, 0.96);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .side-panel.open {
+      transform: translateX(0);
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffd700;
+    }
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      color: #fff;
+    }
+    .textarea-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    textarea {
+      flex: 1;
+      background: rgba(16, 28, 66, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      line-height: 1.6;
+    }
+    textarea:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.25);
+    }
+    .panel-footer {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Winner Popup */
+    .winner-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 6, 17, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .winner-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .winner-card {
+      background: linear-gradient(145deg, #101c42 0%, #0a1027 100%);
+      border: 2px solid #ffd700;
+      border-radius: 24px;
+      padding: 40px 50px;
+      text-align: center;
+      max-width: 580px;
+      width: 90%;
+      box-shadow: 0 0 80px rgba(255, 215, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.8);
+      position: relative;
+      transform: scale(0.85);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .winner-modal.show .winner-card {
+      transform: scale(1);
+    }
+    .trophy-icon {
+      font-size: 64px;
+      margin-bottom: 12px;
+      animation: floatTrophy 2s ease-in-out infinite;
+    }
+    @keyframes floatTrophy {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .winner-subtitle {
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .winner-name {
+      font-size: 38px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 0%, #ffeaa7 40%, #ffd700 80%, #dfa938 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
+      text-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+      word-break: break-word;
+    }
+    .winner-instruction {
+      font-size: 16px;
+      color: #e2e8f0;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px dashed rgba(212, 175, 55, 0.5);
+      padding: 10px 20px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-bottom: 28px;
+    }
+    .winner-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* Floating race status */
+    .status-badge {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(8, 14, 34, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #ffd700;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="brand-box">
+      <div class="main-title">
+        <span>📢</span> Gọi Tên Học Sinh - Cô giáo Hà Thanh Thuỷ
+      </div>
+      <div class="sub-title">THPT Lương Ngọc Quyến • Gọi học sinh lên bảng</div>
+    </div>
+
+    <div class="controls-bar">
+      <button class="btn" id="toggleNamesBtn">
+        📝 Danh Sách Học Sinh (<span id="studentCount">7</span>)
+      </button>
+
+      <button class="btn" id="musicBtn">
+        🎵 Nhạc Đua: Bật
+      </button>
+
+      <button class="btn" id="soundBtn">
+        🔊 Âm Thanh: Bật
+      </button>
+
+      <button class="btn" id="speedBtn">
+        ⚡ Tốc Độ: 1x
+      </button>
+
+      <!-- Time Duration Button & Dropdown -->
+      <div style="position: relative; display: inline-block;">
+        <button class="btn" id="timeBtn" title="Chọn thời gian thi đấu (tính bằng giây)">
+          ⏱️ Thời Gian: <span id="timeDisplay">30s</span> ▾
+        </button>
+        <div id="timeMenu" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; background: #0c1738; border: 1.5px solid #ffd700; border-radius: 12px; padding: 12px; width: 230px; box-shadow: 0 10px 30px rgba(0,0,0,0.85); z-index: 999;">
+          <div style="font-size: 11px; font-weight: bold; color: #ffd700; margin-bottom: 8px;">⏱️ CHỌN THỜI GIAN (GIÂY)</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px;">
+            <button class="btn time-opt-btn" data-sec="15" style="padding: 6px 4px; font-size: 11px; justify-content: center;">15s</button>
+            <button class="btn time-opt-btn" data-sec="20" style="padding: 6px 4px; font-size: 11px; justify-content: center;">20s</button>
+            <button class="btn time-opt-btn btn-gold" data-sec="30" style="padding: 6px 4px; font-size: 11px; justify-content: center;">30s</button>
+            <button class="btn time-opt-btn" data-sec="45" style="padding: 6px 4px; font-size: 11px; justify-content: center;">45s</button>
+            <button class="btn time-opt-btn" data-sec="60" style="padding: 6px 4px; font-size: 11px; justify-content: center;">60s</button>
+            <button class="btn time-opt-btn" data-sec="90" style="padding: 6px 4px; font-size: 11px; justify-content: center;">90s</button>
+          </div>
+          <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">Hoặc nhập số giây (10-180s):</div>
+          <div style="display: flex; gap: 6px;">
+            <input type="number" id="customSecInput" placeholder="10-180" min="5" max="180" style="flex: 1; padding: 5px 8px; background: #070e24; border: 1px solid #334155; color: #ffd700; border-radius: 6px; font-size: 12px; font-weight: bold;">
+            <button class="btn btn-gold" id="applyCustomSecBtn" style="padding: 5px 10px; font-size: 11px;">Lưu</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" id="fullscreenBtn" title="Bật/Tắt chế độ toàn màn hình chiếu lớp (phím F)">
+        🖥️ Toàn Màn Hình
+      </button>
+
+      <button class="btn btn-gold" id="startRaceBtn">
+        🚀 BẮT ĐẦU GỌI TÊN
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="main-content">
+    <!-- Sidebar for student list -->
+    <div class="side-panel" id="sidePanel">
+      <div class="panel-header">
+        <span class="panel-title">👥 Nhập Danh Sách Học Sinh</span>
+        <button class="close-btn" id="closePanelBtn">&times;</button>
+      </div>
+      <div class="textarea-box">
+        <span style="font-size: 12px; color: #94a3b8;">Nhập mỗi học sinh một dòng:</span>
+        <textarea id="namesTextarea">Nguyễn Hoàng Long
+Trần Thị Mai Anh
+Lê Đức Minh
+Phạm Thuỳ Trang
+Vũ Gia Huy
+Đặng Ngọc Bảo
+Bùi Khánh Linh</textarea>
+      </div>
+      <div class="panel-footer">
+        <button class="btn" id="shuffleBtn" style="justify-content: center;">🔀 Xáo Trộn Danh Sách</button>
+        <button class="btn" id="sampleBtn" style="justify-content: center;">🔄 Đặt Lại Tên Mẫu</button>
+      </div>
+    </div>
+
+    <!-- Center Canvas -->
+    <div class="canvas-container" id="canvasContainer">
+      <div class="status-badge" id="statusBadge">
+        <div class="pulse-dot"></div>
+        <span id="statusText">Sẵn sàng xuất phát</span>
+      </div>
+      <canvas id="gameCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Winner Modal -->
+  <div class="winner-modal" id="winnerModal">
+    <div class="winner-card">
+      <div class="trophy-icon">🏆</div>
+      <div class="winner-subtitle">Người Cán Đích Đầu Tiên</div>
+      <div class="winner-name" id="winnerNameText">Trần Thị Mai Anh</div>
+      <div class="winner-instruction">Mời em lên bảng nghiệm thu bài thực hành! 📋</div>
+      <div class="winner-actions">
+        <button class="btn btn-gold" id="restartRaceBtn">🔄 Đua Lượt Tiếp Theo</button>
+        <button class="btn" id="removeWinnerBtn">❌ Loại Tên Này Khỏi Lượt Sau</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       OFFLINE AUDIO SYNTHESIZER (No external audio files needed)
+       ========================================================================== */
+    class AudioSynth {
+      constructor() {
+        this.enabled = true;
+        this.musicEnabled = true;
+        this.ctx = null;
+        this.bgmGainNode = null;
+        this.isBgmPlaying = false;
+        this.bgmIntervalId = null;
+        this.nextNoteTime = 0;
+        this.currentStep = 0;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+            this.bgmGainNode = this.ctx.createGain();
+            this.bgmGainNode.gain.setValueAtTime(0.22, this.ctx.currentTime);
+            this.bgmGainNode.connect(this.ctx.destination);
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      startBgm() {
+        if (!this.enabled || !this.musicEnabled) return;
+        this.init();
+        if (!this.ctx || !this.bgmGainNode) return;
+        if (this.isBgmPlaying) return;
+
+        this.isBgmPlaying = true;
+        this.currentStep = 0;
+        this.nextNoteTime = this.ctx.currentTime + 0.05;
+
+        this.bgmGainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+        this.bgmGainNode.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        this.bgmGainNode.gain.linearRampToValueAtTime(0.22, this.ctx.currentTime + 0.25);
+
+        const tempo = 132;
+        const stepDuration = 60 / tempo / 4;
+
+        this.bgmIntervalId = setInterval(() => {
+          if (!this.isBgmPlaying || !this.ctx) return;
+          while (this.nextNoteTime < this.ctx.currentTime + 0.15) {
+            this.playMusicStep(this.nextNoteTime, this.currentStep);
+            this.nextNoteTime += stepDuration;
+            this.currentStep = (this.currentStep + 1) % 32;
+          }
+        }, 25);
+      }
+      playMusicStep(time, step) {
+        if (!this.ctx || !this.bgmGainNode) return;
+
+        // Kick drum on quarters
+        if (step % 4 === 0) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(140, time);
+          osc.frequency.exponentialRampToValueAtTime(38, time + 0.09);
+          gain.gain.setValueAtTime(0.35, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.11);
+          osc.connect(gain);
+          gain.connect(this.bgmGainNode);
+          osc.start(time);
+          osc.stop(time + 0.12);
+        }
+
+        // Crisp tick on offbeats
+        if (step % 2 === 1 || step % 4 === 2) {
+          const isAccent = step % 4 === 2;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(isAccent ? 3800 : 2600, time);
+          gain.gain.setValueAtTime(isAccent ? 0.04 : 0.02, time);
+          gain.gain.exponentialRampToValueAtTime(0.0005, time + 0.035);
+          osc.connect(gain);
+          gain.connect(this.bgmGainNode);
+          osc.start(time);
+          osc.stop(time + 0.04);
+        }
+
+        // Bassline D minor progression
+        const bassNotes = [
+          73.42, 73.42, 146.83, 73.42, 73.42, 73.42, 146.83, 87.31,
+          87.31, 87.31, 174.61, 87.31, 98.0,  98.0,  196.0,  110.0,
+          73.42, 73.42, 146.83, 73.42, 73.42, 73.42, 146.83, 87.31,
+          65.41, 65.41, 130.81, 65.41, 110.0, 110.0, 110.0, 123.47
+        ];
+        const bassFreq = bassNotes[step];
+        if (bassFreq) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(bassFreq, time);
+          gain.gain.setValueAtTime(0.12, time);
+          gain.gain.exponentialRampToValueAtTime(0.002, time + 0.09);
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(500 + (step % 8) * 80, time);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.bgmGainNode);
+          osc.start(time);
+          osc.stop(time + 0.1);
+        }
+
+        // Suspense Arpeggio
+        const arpNotes = [
+          293.66, null, 349.23, null, 440.0, null, 587.33, null,
+          349.23, 440.0, null, 587.33, 659.25, null, 698.46, 587.33,
+          293.66, null, 349.23, null, 440.0, null, 587.33, null,
+          587.33, 523.25, 440.0, 392.0, 440.0, null, 293.66, null
+        ];
+        const arFreq = arpNotes[step];
+        if (arFreq) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(arFreq, time);
+          gain.gain.setValueAtTime(0.06, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+          osc.connect(gain);
+          gain.connect(this.bgmGainNode);
+          osc.start(time);
+          osc.stop(time + 0.09);
+        }
+      }
+      stopBgm(immediate = false) {
+        if (!this.isBgmPlaying) return;
+        this.isBgmPlaying = false;
+        if (this.bgmIntervalId) {
+          clearInterval(this.bgmIntervalId);
+          this.bgmIntervalId = null;
+        }
+        if (this.ctx && this.bgmGainNode) {
+          if (immediate) {
+            this.bgmGainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+            this.bgmGainNode.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+          } else {
+            this.bgmGainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+            this.bgmGainNode.gain.setValueAtTime(this.bgmGainNode.gain.value, this.ctx.currentTime);
+            this.bgmGainNode.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.15);
+          }
+        }
+      }
+      playBounce() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+        const freq = notes[Math.floor(Math.random() * notes.length)];
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.7, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.09);
+      }
+      playBumper() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.21);
+      }
+      playCountdown(isGo) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = isGo ? 'sawtooth' : 'sine';
+        const freq = isGo ? 900 : 440;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        if (isGo) osc.frequency.exponentialRampToValueAtTime(1400, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (isGo ? 0.35 : 0.15));
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + (isGo ? 0.36 : 0.16));
+      }
+      playFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const notes = [
+          { f: 523.25, t: 0, d: 0.12 },
+          { f: 659.25, t: 0.12, d: 0.12 },
+          { f: 783.99, t: 0.24, d: 0.15 },
+          { f: 1046.5, t: 0.40, d: 0.6 }
+        ];
+        notes.forEach(n => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(n.f, this.ctx.currentTime + n.t);
+          gain.gain.setValueAtTime(0.01, this.ctx.currentTime + n.t);
+          gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + n.t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + n.t + n.d);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.stop(this.ctx.currentTime + n.t + n.d + 0.02);
+        });
+      }
+      playTimerTick(isUrgent) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = isUrgent ? 'sawtooth' : 'sine';
+        osc.frequency.setValueAtTime(isUrgent ? 880 : 660, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(isUrgent ? 440 : 330, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(isUrgent ? 0.12 : 0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.06);
+      }
+      playTimeoutBuzzer() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(160, this.ctx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.36);
+      }
+    }
+    const sound = new AudioSynth();
+
+    /* ==========================================================================
+       CONFETTI SYSTEM
+       ========================================================================== */
+    class ConfettiEffect {
+      constructor() {
+        this.particles = [];
+        this.colors = ['#ffd700', '#ff4d4d', '#00e5ff', '#ff007f', '#a855f7', '#22c55e', '#ffffff'];
+      }
+      burst(count = 120) {
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+            vx: (Math.random() - 0.5) * 22,
+            vy: (Math.random() - 0.8) * 20,
+            size: Math.random() * 8 + 4,
+            color: this.colors[Math.floor(Math.random() * this.colors.length)],
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 12,
+            alpha: 1,
+            decay: Math.random() * 0.01 + 0.008
+          });
+        }
+      }
+      update() {
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35; // gravity
+          p.vx *= 0.98;
+          p.rotation += p.rotSpeed;
+          p.alpha -= p.decay;
+          if (p.alpha <= 0 || p.y > window.innerHeight) {
+            this.particles.splice(i, 1);
+          }
+        }
+      }
+      draw(ctx) {
+        ctx.save();
+        for (const p of this.particles) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        }
+        ctx.restore();
+      }
+    }
+    const confetti = new ConfettiEffect();
+
+    /* ==========================================================================
+       FIREWORKS PARTICLE SYSTEM
+       ========================================================================== */
+    class FireworkEffect {
+      constructor() {
+        this.particles = [];
+        this.rings = [];
+        this.palettes = [
+          ['#ffd700', '#ffeb3b', '#ff9800', '#ffffff'],
+          ['#ff1744', '#f50057', '#ff80ab', '#ffffff'],
+          ['#00e5ff', '#1de9b6', '#00b0ff', '#ffffff'],
+          ['#d500f9', '#7c4dff', '#e040fb', '#ffffff'],
+          ['#00e676', '#76ff03', '#b2ff59', '#ffffff']
+        ];
+      }
+      burst(x, y, count = 75) {
+        const palette = this.palettes[Math.floor(Math.random() * this.palettes.length)];
+        this.rings.push({
+          x,
+          y,
+          radius: 4,
+          maxRadius: 70,
+          color: palette[0],
+          alpha: 1.0,
+          growthRate: 3.5
+        });
+
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.25;
+          const speed = 1.8 + Math.random() * 7.2;
+          const color = palette[Math.floor(Math.random() * palette.length)];
+          this.particles.push({
+            x,
+            y,
+            prevX: x,
+            prevY: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color,
+            size: 2.2 + Math.random() * 2.2,
+            alpha: 1.0,
+            decay: 0.009 + Math.random() * 0.012,
+            gravity: 0.055 + Math.random() * 0.025,
+            friction: 0.965,
+            sparkle: Math.random() > 0.45
+          });
+        }
+      }
+      update() {
+        for (let i = this.rings.length - 1; i >= 0; i--) {
+          const r = this.rings[i];
+          r.radius += r.growthRate;
+          r.alpha -= 0.035;
+          if (r.alpha <= 0 || r.radius >= r.maxRadius) {
+            this.rings.splice(i, 1);
+          }
+        }
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.prevX = p.x;
+          p.prevY = p.y;
+          p.vx *= p.friction;
+          p.vy = p.vy * p.friction + p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+          if (p.alpha <= 0 || p.y > 1120) {
+            this.particles.splice(i, 1);
+          }
+        }
+      }
+      draw(ctx) {
+        for (const r of this.rings) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, r.alpha);
+          ctx.strokeStyle = r.color;
+          ctx.lineWidth = 2.5;
+          ctx.shadowColor = r.color;
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+        for (const p of this.particles) {
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = p.size;
+          ctx.lineCap = 'round';
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 9;
+          ctx.beginPath();
+          ctx.moveTo(p.prevX, p.prevY);
+          ctx.lineTo(p.x, p.y);
+          ctx.stroke();
+
+          if (p.sparkle && p.alpha > 0.4) {
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * 0.7, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+      }
+      clear() {
+        this.particles = [];
+        this.rings = [];
+      }
+    }
+    const fireworks = new FireworkEffect();
+
+    /* ==========================================================================
+       MARBLE RACE ENGINE
+       ========================================================================== */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('canvasContainer');
+
+    const COLOR_PALETTES = [
+      { primary: '#ff3366', secondary: '#ff99b3' },
+      { primary: '#00d2ff', secondary: '#80e8ff' },
+      { primary: '#ffaa00', secondary: '#ffe066' },
+      { primary: '#10b981', secondary: '#6ee7b7' },
+      { primary: '#8b5cf6', secondary: '#c4b5fd' },
+      { primary: '#ec4899', secondary: '#fbcfe8' },
+      { primary: '#f43f5e', secondary: '#fda4af' },
+      { primary: '#eab308', secondary: '#fef08a' },
+      { primary: '#06b6d4', secondary: '#a5f3fc' },
+      { primary: '#3b82f6', secondary: '#93c5fd' },
+      { primary: '#d946ef', secondary: '#f5d0fe' },
+      { primary: '#14b8a6', secondary: '#99f6e4' }
+    ];
+
+    let VIRTUAL_WIDTH = 750;
+    let VIRTUAL_HEIGHT = 1100;
+    let scale = 1;
+
+    let raceState = 'idle'; // idle | countdown | racing | finished
+    let speedMultiplier = 1;
+    let targetDuration = 30; // Seconds
+    let raceStartTime = 0;
+    let lastTickSec = -1;
+    let winner = null;
+    let marbles = [];
+    let pegs = [];
+    let bumpers = [];
+    let spinners = [];
+    let ramps = [];
+    let boosters = [];
+    let countdownValue = 3;
+    let countdownTimer = 0;
+    let gateOpen = false;
+    let gateY = 140;
+    let lastFireworkTime = 0;
+    let shakeIntensity = 0;
+
+    function addScreenShake(amount) {
+      shakeIntensity = Math.min(10, Math.max(shakeIntensity, amount));
+    }
+
+    function resizeCanvas() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      // Fit virtual track inside container preserving aspect ratio, scaling to full screen
+      const scaleX = (w - 12) / VIRTUAL_WIDTH;
+      const scaleY = (h - 12) / VIRTUAL_HEIGHT;
+      scale = Math.min(scaleX, scaleY);
+
+      canvas.width = VIRTUAL_WIDTH * scale * dpr;
+      canvas.height = VIRTUAL_HEIGHT * scale * dpr;
+      canvas.style.width = `${VIRTUAL_WIDTH * scale}px`;
+      canvas.style.height = `${VIRTUAL_HEIGHT * scale}px`;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(scale * dpr, scale * dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function initTrackObstacles() {
+      pegs = [];
+      bumpers = [];
+      spinners = [];
+      ramps = [];
+      boosters = [];
+
+      // Starting gate bar
+      gateY = 150;
+
+      // 9 High bounciness bumpers (including central red challenge bumper)
+      bumpers.push(
+        { x: 160, y: 360, radius: 24, glow: 0, power: 8.5, color: '#00e5ff' },
+        { x: 590, y: 360, radius: 24, glow: 0, power: 8.5, color: '#00e5ff' },
+        { x: 260, y: 490, radius: 25, glow: 0, power: 9.0, color: '#ffd700' },
+        { x: 490, y: 490, radius: 25, glow: 0, power: 9.0, color: '#ffd700' },
+        { x: 150, y: 680, radius: 23, glow: 0, power: 8.5, color: '#e040fb' },
+        { x: 600, y: 680, radius: 23, glow: 0, power: 8.5, color: '#e040fb' },
+        { x: 375, y: 780, radius: 25, glow: 0, power: 9.2, color: '#ff1744' }, // Central red challenge bumper
+        { x: 290, y: 870, radius: 26, glow: 0, power: 9.5, color: '#ff9100' },
+        { x: 460, y: 870, radius: 26, glow: 0, power: 9.5, color: '#ff9100' }
+      );
+
+      // 5 Rotating pinwheels / spinners
+      spinners.push(
+        { x: 375, y: 390, radius: 10, angle: 0, angularSpeed: 0.045, arms: 4, length: 42, color: '#ffd700' },
+        { x: 200, y: 580, radius: 10, angle: Math.PI / 4, angularSpeed: -0.05, arms: 4, length: 40, color: '#00e5ff' },
+        { x: 550, y: 580, radius: 10, angle: 0, angularSpeed: 0.05, arms: 4, length: 40, color: '#00e5ff' },
+        { x: 375, y: 710, radius: 12, angle: Math.PI / 3, angularSpeed: -0.055, arms: 4, length: 44, color: '#ff2d75' },
+        { x: 375, y: 940, radius: 10, angle: 0, angularSpeed: 0.05, arms: 3, length: 40, color: '#00ff88' }
+      );
+
+      // 8 Deflector Ramps (Angled Kinetic Rails & Diamond Splitter)
+      ramps.push(
+        { x1: 80, y1: 260, x2: 180, y2: 310, thickness: 8, color: '#38bdf8' },
+        { x1: 670, y1: 260, x2: 570, y2: 310, thickness: 8, color: '#38bdf8' },
+        // Mid diamond kinetic splitter
+        { x1: 375, y1: 520, x2: 315, y2: 560, thickness: 8, color: '#c084fc' },
+        { x1: 375, y1: 520, x2: 435, y2: 560, thickness: 8, color: '#c084fc' },
+        { x1: 80, y1: 680, x2: 180, y2: 720, thickness: 8, color: '#f43f5e' },
+        { x1: 670, y1: 680, x2: 570, y2: 720, thickness: 8, color: '#f43f5e' },
+        // Choke point rails
+        { x1: 120, y1: 820, x2: 240, y2: 865, thickness: 8, color: '#facc15' },
+        { x1: 630, y1: 820, x2: 510, y2: 865, thickness: 8, color: '#facc15' }
+      );
+
+      // 5 Speed Boosters
+      boosters.push(
+        { x: 280, y: 250, width: 42, height: 46, direction: 'down', multiplier: 1.8, glow: 0 },
+        { x: 470, y: 250, width: 42, height: 46, direction: 'down', multiplier: 1.8, glow: 0 },
+        { x: 375, y: 620, width: 46, height: 46, direction: 'down', multiplier: 2.0, glow: 0 },
+        { x: 260, y: 880, width: 42, height: 44, direction: 'down', multiplier: 2.2, glow: 0 },
+        { x: 490, y: 880, width: 42, height: 44, direction: 'down', multiplier: 2.2, glow: 0 }
+      );
+
+      // Plinko pegs grid
+      const startY = 220;
+      const endY = 960;
+      const rows = 13;
+
+      for (let r = 0; r < rows; r++) {
+        const y = startY + r * ((endY - startY) / (rows - 1));
+        const isOdd = r % 2 === 1;
+        const cols = isOdd ? 8 : 9;
+        const colSpacing = 68;
+        const offsetX = (VIRTUAL_WIDTH - (cols - 1) * colSpacing) / 2;
+
+        for (let c = 0; c < cols; c++) {
+          const x = offsetX + c * colSpacing;
+
+          let overlap = false;
+          for (const b of bumpers) {
+            if (Math.hypot(x - b.x, y - b.y) < b.radius + 18) { overlap = true; break; }
+          }
+          if (overlap) continue;
+
+          for (const s of spinners) {
+            if (Math.hypot(x - s.x, y - s.y) < s.length + 16) { overlap = true; break; }
+          }
+          if (overlap) continue;
+
+          for (const bst of boosters) {
+            if (Math.abs(x - bst.x) < bst.width / 2 + 14 && Math.abs(y - bst.y) < bst.height / 2 + 14) {
+              overlap = true; break;
+            }
+          }
+          if (overlap) continue;
+
+          for (const rm of ramps) {
+            const dx = rm.x2 - rm.x1;
+            const dy = rm.y2 - rm.y1;
+            const lenSq = dx * dx + dy * dy;
+            let t = ((x - rm.x1) * dx + (y - rm.y1) * dy) / lenSq;
+            t = Math.max(0, Math.min(1, t));
+            const cx = rm.x1 + t * dx;
+            const cy = rm.y1 + t * dy;
+            if (Math.hypot(x - cx, y - cy) < rm.thickness / 2 + 16) { overlap = true; break; }
+          }
+          if (overlap) continue;
+
+          pegs.push({
+            x,
+            y,
+            radius: 5.5,
+            glow: 0,
+            type: (r % 3 === 0) ? 'gold' : (r % 3 === 1) ? 'neon' : 'regular'
+          });
+        }
+      }
+    }
+
+    function getStudentNames() {
+      const text = document.getElementById('namesTextarea').value;
+      return text
+        .split('\n')
+        .map(n => n.trim())
+        .filter(n => n.length > 0);
+    }
+
+    function setupMarbles() {
+      const names = getStudentNames();
+      document.getElementById('studentCount').innerText = names.length;
+
+      marbles = [];
+      const count = names.length;
+      if (count === 0) return;
+
+      const funnelLeft = 200;
+      const funnelRight = 550;
+      const span = funnelRight - funnelLeft;
+
+      names.forEach((name, idx) => {
+        const palette = COLOR_PALETTES[idx % COLOR_PALETTES.length];
+        const row = Math.floor(idx / 6);
+        const col = idx % 6;
+        const totalInRow = Math.min(6, count - row * 6);
+        const colStep = span / (totalInRow + 1);
+
+        marbles.push({
+          id: `m_${idx}`,
+          name: name,
+          x: funnelLeft + (col + 1) * colStep + (Math.random() - 0.5) * 8,
+          y: 70 + row * 26 + (Math.random() - 0.5) * 6,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: 0,
+          radius: 14,
+          color: palette.primary,
+          secondaryColor: palette.secondary,
+          glow: 0,
+          highlightTimer: 0,
+          stuckTimer: 0
+        });
+      });
+    }
+
+    function startRace() {
+      if (raceState === 'racing' || raceState === 'countdown') return;
+
+      const names = getStudentNames();
+      if (names.length === 0) {
+        alert('Vui lòng nhập ít nhất 1 tên học sinh!');
+        return;
+      }
+
+      sound.stopBgm(true);
+      fireworks.clear();
+      setupMarbles();
+      winner = null;
+      document.getElementById('winnerModal').classList.remove('show');
+      document.getElementById('startRaceBtn').disabled = true;
+
+      // Start countdown
+      raceState = 'countdown';
+      countdownValue = 3;
+      countdownTimer = Date.now();
+      sound.playCountdown(false);
+      updateStatusBadge('Chuẩn bị xuất phát: 3');
+
+      const cdInterval = setInterval(() => {
+        countdownValue--;
+        if (countdownValue > 0) {
+          sound.playCountdown(false);
+          updateStatusBadge(`Chuẩn bị xuất phát: ${countdownValue}`);
+        } else if (countdownValue === 0) {
+          sound.playCountdown(true);
+          updateStatusBadge('🚀 THẢ BI! ĐUA NÀO!');
+          gateOpen = true;
+          raceState = 'racing';
+          sound.startBgm();
+          clearInterval(cdInterval);
+        }
+      }, 900);
+    }
+
+    function updateStatusBadge(text) {
+      document.getElementById('statusText').innerText = text;
+    }
+
+    /* ==========================================================================
+       PHYSICS & UPDATE LOOP
+       ========================================================================== */
+    function updatePhysics() {
+      if (raceState !== 'racing') return;
+
+      const now = performance.now();
+      if (raceStartTime === 0) raceStartTime = now;
+      const elapsedSec = (now - raceStartTime) / 1000;
+      const remainingSec = Math.max(0, targetDuration - elapsedSec);
+
+      // Sound warning on final 5 seconds (5, 4, 3, 2, 1)
+      if (remainingSec <= 5.0 && remainingSec > 0) {
+        const currentCeil = Math.ceil(remainingSec);
+        if (currentCeil !== lastTickSec) {
+          lastTickSec = currentCeil;
+          sound.playTimerTick(true);
+          addScreenShake(1.6);
+        }
+      }
+
+      // Timeout Finish Condition
+      if (elapsedSec >= targetDuration && !winner) {
+        let timeoutWinner = marbles[0];
+        for (const m of marbles) {
+          if (m.y > timeoutWinner.y) timeoutWinner = m;
+        }
+        if (timeoutWinner) {
+          triggerWinner(timeoutWinner, true);
+          return;
+        }
+      }
+
+      const paceFactor = Math.min(1.4, Math.max(0.7, Math.sqrt(28 / targetDuration)));
+      const gravity = 0.22 * speedMultiplier * paceFactor;
+      const restitution = 0.55;
+      const finishY = 1000;
+
+      // Update spinners
+      for (const sp of spinners) {
+        sp.angle += sp.angularSpeed * speedMultiplier * paceFactor;
+      }
+
+      // Update pegs glow fade
+      for (const peg of pegs) {
+        if (peg.glow > 0) peg.glow *= 0.88;
+      }
+      for (const b of bumpers) {
+        if (b.glow > 0) b.glow *= 0.88;
+      }
+      for (const bst of boosters) {
+        if ((bst.glow || 0) > 0) bst.glow *= 0.88;
+      }
+
+      // Update marbles
+      for (let i = 0; i < marbles.length; i++) {
+        const m = marbles[i];
+
+        // Apply gravity
+        m.vy += gravity;
+
+        // Apply slight randomized turbulent drift
+        m.vx += (Math.random() - 0.5) * 0.12 * speedMultiplier;
+
+        // Velocity damping (air resistance)
+        m.vx *= 0.995;
+        m.vy *= 0.995;
+
+        // Max speed cap
+        const maxSpd = 12 * speedMultiplier * paceFactor;
+        const currentSpd = Math.hypot(m.vx, m.vy);
+        if (currentSpd > maxSpd) {
+          m.vx = (m.vx / currentSpd) * maxSpd;
+          m.vy = (m.vy / currentSpd) * maxSpd;
+        }
+
+        m.x += m.vx * speedMultiplier;
+        m.y += m.vy * speedMultiplier;
+
+        // Anti-stuck logic
+        if (Math.abs(m.vx) < 0.2 && Math.abs(m.vy) < 0.4 && m.y > 180 && m.y < finishY - 50) {
+          m.stuckTimer++;
+          if (m.stuckTimer > 40) {
+            m.vx += (Math.random() - 0.5) * 3;
+            m.vy += 1.5;
+            m.stuckTimer = 0;
+          }
+        } else {
+          m.stuckTimer = 0;
+        }
+
+        // Walls Collision
+        const leftWall = 80;
+        const rightWall = VIRTUAL_WIDTH - 80;
+
+        if (m.x - m.radius < leftWall) {
+          m.x = leftWall + m.radius;
+          m.vx = -m.vx * restitution;
+          sound.playBounce(0.9);
+          if (Math.abs(m.vx) > 3.5) addScreenShake(2.5);
+        } else if (m.x + m.radius > rightWall) {
+          m.x = rightWall - m.radius;
+          m.vx = -m.vx * restitution;
+          sound.playBounce(0.9);
+          if (Math.abs(m.vx) > 3.5) addScreenShake(2.5);
+        }
+
+        // Starting Funnel Walls (top container)
+        if (m.y < 170) {
+          if (m.x < 190 && m.y > 60 + (190 - m.x) * 0.6) {
+            m.x = 190;
+            m.vx = Math.abs(m.vx) * 0.5 + 0.5;
+          }
+          if (m.x > VIRTUAL_WIDTH - 190 && m.y > 60 + (m.x - (VIRTUAL_WIDTH - 190)) * 0.6) {
+            m.x = VIRTUAL_WIDTH - 190;
+            m.vx = -Math.abs(m.vx) * 0.5 - 0.5;
+          }
+        }
+
+        // Deflector Ramps collision
+        for (const rm of ramps) {
+          const rdx = rm.x2 - rm.x1;
+          const rdy = rm.y2 - rm.y1;
+          const lenSq = rdx * rdx + rdy * rdy;
+          let t = ((m.x - rm.x1) * rdx + (m.y - rm.y1) * rdy) / lenSq;
+          t = Math.max(0, Math.min(1, t));
+          const cx = rm.x1 + t * rdx;
+          const cy = rm.y1 + t * rdy;
+          const dist = Math.hypot(m.x - cx, m.y - cy);
+          const minDist = m.radius + rm.thickness / 2;
+
+          if (dist < minDist && dist > 0) {
+            const nx = (m.x - cx) / dist;
+            const ny = (m.y - cy) / dist;
+            m.x = cx + nx * minDist;
+            m.y = cy + ny * minDist;
+
+            const dot = m.vx * nx + m.vy * ny;
+            if (dot < 0) {
+              m.vx = (m.vx - 2 * dot * nx) * restitution + (Math.random() - 0.5) * 0.6;
+              m.vy = (m.vy - 2 * dot * ny) * restitution;
+              sound.playBounce(1.2);
+              addScreenShake(3.0);
+            }
+          }
+        }
+
+        // Speed Booster Zones
+        for (const bst of boosters) {
+          if (
+            m.x >= bst.x - bst.width / 2 &&
+            m.x <= bst.x + bst.width / 2 &&
+            m.y >= bst.y - bst.height / 2 &&
+            m.y <= bst.y + bst.height / 2
+          ) {
+            if (m.vy < 9 * speedMultiplier) {
+              m.vy += 2.8 * speedMultiplier;
+              bst.glow = 1.0;
+              sound.playBounce(1.3);
+              addScreenShake(2.0);
+            }
+          }
+        }
+
+        // Pegs collision
+        for (const peg of pegs) {
+          const dx = m.x - peg.x;
+          const dy = m.y - peg.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = m.radius + peg.radius;
+
+          if (dist < minDist && dist > 0) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = minDist - dist;
+            m.x += nx * overlap;
+            m.y += ny * overlap;
+
+            const dot = m.vx * nx + m.vy * ny;
+            m.vx = (m.vx - 2 * dot * nx) * restitution + (Math.random() - 0.5) * 0.6;
+            m.vy = (m.vy - 2 * dot * ny) * restitution;
+
+            peg.glow = 1.0;
+            sound.playBounce(1 + (peg.y / VIRTUAL_HEIGHT) * 0.5);
+          }
+        }
+
+        // Bumpers collision
+        for (const b of bumpers) {
+          const dx = m.x - b.x;
+          const dy = m.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = m.radius + b.radius;
+
+          if (dist < minDist && dist > 0) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            m.x = b.x + nx * minDist;
+            m.y = b.y + ny * minDist;
+
+            m.vx = nx * b.power;
+            m.vy = ny * b.power;
+
+            b.glow = 1.0;
+            sound.playBumper();
+            addScreenShake(6.5);
+          }
+        }
+
+        // Spinners collision
+        for (const sp of spinners) {
+          for (let a = 0; a < sp.arms; a++) {
+            const armAngle = sp.angle + (a * 2 * Math.PI) / sp.arms;
+            const armEndX = sp.x + Math.cos(armAngle) * sp.length;
+            const armEndY = sp.y + Math.sin(armAngle) * sp.length;
+
+            const segX = armEndX - sp.x;
+            const segY = armEndY - sp.y;
+            const segLenSq = segX * segX + segY * segY;
+            let t = ((m.x - sp.x) * segX + (m.y - sp.y) * segY) / segLenSq;
+            t = Math.max(0, Math.min(1, t));
+
+            const closestX = sp.x + t * segX;
+            const closestY = sp.y + t * segY;
+            const dist = Math.hypot(m.x - closestX, m.y - closestY);
+
+            if (dist < m.radius + 4) {
+              const nx = (m.x - closestX) / (dist || 1);
+              const ny = (m.y - closestY) / (dist || 1);
+              m.x = closestX + nx * (m.radius + 4);
+              m.y = closestY + ny * (m.radius + 4);
+
+              const bladeSpeed = sp.angularSpeed * sp.length * 2.5;
+              m.vx += -Math.sin(armAngle) * bladeSpeed * 0.8 + nx * 3;
+              m.vy += Math.cos(armAngle) * bladeSpeed * 0.8 + ny * 3;
+
+              sound.playBounce(1.4);
+              addScreenShake(4.5);
+            }
+          }
+        }
+
+        // Marble-to-Marble collision
+        for (let j = i + 1; j < marbles.length; j++) {
+          const m2 = marbles[j];
+          const dx = m2.x - m.x;
+          const dy = m2.y - m.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = m.radius + m2.radius;
+
+          if (dist < minDist && dist > 0) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (minDist - dist) * 0.5;
+
+            m.x -= nx * overlap;
+            m.y -= ny * overlap;
+            m2.x += nx * overlap;
+            m2.y += ny * overlap;
+
+            const kx = m.vx - m2.vx;
+            const ky = m.vy - m2.vy;
+            const p = 2 * (nx * kx + ny * ky) / 2;
+
+            m.vx -= p * nx * 0.6;
+            m.vy -= p * ny * 0.6;
+            m2.vx += p * nx * 0.6;
+            m2.vy += p * ny * 0.6;
+          }
+        }
+
+        // Check Finish Line
+        if (m.y + m.radius >= finishY && !winner) {
+          addScreenShake(8);
+          triggerWinner(m, false);
+          break;
+        }
+      }
+
+      // Check current leader to update floating status
+      if (raceState === 'racing' && !winner && marbles.length > 0) {
+        let leader = marbles[0];
+        for (const m of marbles) {
+          if (m.y > leader.y) leader = m;
+        }
+        updateStatusBadge(`Đang dẫn đầu: ${leader.name} (⏱️ ${remainingSec.toFixed(1)}s)`);
+      }
+
+      // Continuous festive fireworks while race is finished
+      if (raceState === 'finished') {
+        const now = Date.now();
+        if (now - lastFireworkTime > 380) {
+          fireworks.burst(
+            120 + Math.random() * (VIRTUAL_WIDTH - 240),
+            180 + Math.random() * 450,
+            70
+          );
+          lastFireworkTime = now;
+        }
+      }
+    }
+
+    function triggerWinner(winningMarble, isTimeout = false) {
+      sound.stopBgm();
+      winner = winningMarble;
+      raceState = 'finished';
+      if (isTimeout) {
+        sound.playTimeoutBuzzer();
+      }
+      sound.playFanfare();
+      confetti.burst(160);
+
+      // Record time and reason
+      const elapsed = (performance.now() - raceStartTime) / 1000;
+      const winTime = isTimeout ? targetDuration : Math.round(elapsed * 10) / 10;
+
+      // Launch dazzling firework particle bursts on canvas
+      fireworks.burst(winner.x, winner.y - 10, 95);
+      setTimeout(() => fireworks.burst(VIRTUAL_WIDTH * 0.28, 320, 75), 140);
+      setTimeout(() => fireworks.burst(VIRTUAL_WIDTH * 0.72, 340, 75), 280);
+      lastFireworkTime = Date.now() + 350;
+
+      if (isTimeout) {
+        document.getElementById('statusText').innerText = `⏱️ Hết giờ (${targetDuration}s)! ${winner.name} dẫn đầu và chiến thắng!`;
+        document.querySelector('.winner-subtitle').innerText = `⏱️ DẪN ĐẦU KHI HẾT ${targetDuration} GIÂY THI ĐẤU`;
+      } else {
+        document.getElementById('statusText').innerText = `🏆 Chiến thắng: ${winner.name} (${winTime}s)!`;
+        document.querySelector('.winner-subtitle').innerText = `🏁 HỌC SINH CÁN ĐÍCH ĐẦU TIÊN (${winTime}s)`;
+      }
+      document.getElementById('winnerNameText').innerText = winner.name;
+      document.getElementById('startRaceBtn').disabled = false;
+
+      setTimeout(() => {
+        document.getElementById('winnerModal').classList.add('show');
+      }, 350);
+    }
+
+    /* ==========================================================================
+       RENDERING
+       ========================================================================== */
+    function drawTrack() {
+      // Screen shake calculation
+      let shakeX = 0;
+      let shakeY = 0;
+      if (shakeIntensity > 0.05) {
+        shakeX = (Math.random() - 0.5) * 2 * shakeIntensity;
+        shakeY = (Math.random() - 0.5) * 2 * shakeIntensity;
+        shakeIntensity *= 0.86;
+        if (shakeIntensity < 0.05) shakeIntensity = 0;
+      }
+
+      ctx.save();
+      if (shakeX !== 0 || shakeY !== 0) {
+        ctx.translate(shakeX, shakeY);
+      }
+
+      ctx.clearRect(-20, -20, VIRTUAL_WIDTH + 40, VIRTUAL_HEIGHT + 40);
+
+      // Background ambient grid & elegant borders
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, VIRTUAL_HEIGHT);
+      bgGrad.addColorStop(0, '#09132e');
+      bgGrad.addColorStop(0.5, '#0c183d');
+      bgGrad.addColorStop(1, '#050a1b');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+
+      // Subtle track grid lines
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.05)';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < VIRTUAL_HEIGHT; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(80, y);
+        ctx.lineTo(VIRTUAL_WIDTH - 80, y);
+        ctx.stroke();
+      }
+
+      // Track Side Rails / Glowing Golden Walls
+      const leftWallX = 80;
+      const rightWallX = VIRTUAL_WIDTH - 80;
+
+      // Glow rail effect
+      ctx.shadowColor = '#ffd700';
+      ctx.shadowBlur = 12;
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 4;
+
+      // Left Rail
+      ctx.beginPath();
+      ctx.moveTo(leftWallX, 160);
+      ctx.lineTo(leftWallX, 1020);
+      ctx.stroke();
+
+      // Right Rail
+      ctx.beginPath();
+      ctx.moveTo(rightWallX, 160);
+      ctx.lineTo(rightWallX, 1020);
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+
+      // Starting Funnel Rails
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.7)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(180, 50);
+      ctx.lineTo(210, 150);
+      ctx.lineTo(leftWallX, 160);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(VIRTUAL_WIDTH - 180, 50);
+      ctx.lineTo(VIRTUAL_WIDTH - 210, 150);
+      ctx.lineTo(rightWallX, 160);
+      ctx.stroke();
+
+      // Starting Gate
+      if (!gateOpen && raceState !== 'racing') {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 6;
+        ctx.shadowColor = '#f59e0b';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.moveTo(210, gateY);
+        ctx.lineTo(VIRTUAL_WIDTH - 210, gateY);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CỔNG XUẤT PHÁT', VIRTUAL_WIDTH / 2, gateY - 10);
+      }
+
+      // Draw Finish Line
+      const finishY = 1000;
+      const boxSize = 14;
+      const numBoxes = Math.floor((rightWallX - leftWallX) / boxSize);
+      for (let i = 0; i < numBoxes; i++) {
+        for (let r = 0; r < 2; r++) {
+          const isBlack = (i + r) % 2 === 0;
+          ctx.fillStyle = isBlack ? '#ffffff' : '#ffd700';
+          ctx.fillRect(leftWallX + i * boxSize, finishY + r * boxSize, boxSize, boxSize);
+        }
+      }
+      ctx.fillStyle = '#ffd700';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🏁 ĐÍCH ĐẾN - NGƯỜI ĐƯỢC CHỌN LÊN BẢNG 🏁', VIRTUAL_WIDTH / 2, finishY + 45);
+
+      // Draw Deflector Ramps
+      for (const rm of ramps) {
+        ctx.save();
+        ctx.shadowColor = rm.color;
+        ctx.shadowBlur = 10;
+        ctx.strokeStyle = rm.color;
+        ctx.lineWidth = rm.thickness;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(rm.x1, rm.y1);
+        ctx.lineTo(rm.x2, rm.y2);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(rm.x1, rm.y1);
+        ctx.lineTo(rm.x2, rm.y2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Draw Speed Boosters
+      for (const bst of boosters) {
+        ctx.save();
+        ctx.translate(bst.x, bst.y);
+
+        const isGlow = (bst.glow || 0) > 0.05;
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = isGlow ? 18 : 6;
+        ctx.fillStyle = isGlow ? 'rgba(0, 229, 255, 0.4)' : 'rgba(0, 229, 255, 0.15)';
+        ctx.strokeStyle = isGlow ? '#ffffff' : 'rgba(0, 229, 255, 0.6)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(-bst.width / 2, -bst.height / 2, bst.width, bst.height, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        const cycle = (Date.now() / 200) % 2;
+        ctx.fillStyle = isGlow ? '#ffffff' : '#00e5ff';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('▼', 0, -6 + cycle * 4);
+        ctx.fillText('▼', 0, 6 + cycle * 4);
+
+        ctx.restore();
+      }
+
+      // Draw Spinners
+      for (const sp of spinners) {
+        ctx.save();
+        ctx.translate(sp.x, sp.y);
+        ctx.rotate(sp.angle);
+
+        const spinColor = sp.color || '#f59e0b';
+        ctx.fillStyle = spinColor;
+        ctx.shadowColor = spinColor;
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(0, 0, sp.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Arms
+        for (let a = 0; a < sp.arms; a++) {
+          const angle = (a * 2 * Math.PI) / sp.arms;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.fillStyle = '#ffd700';
+          ctx.fillRect(0, -3, sp.length, 6);
+          // Blade tip
+          ctx.fillStyle = spinColor;
+          ctx.beginPath();
+          ctx.arc(sp.length, 0, 5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.restore();
+      }
+
+      // Draw Bumpers
+      for (const b of bumpers) {
+        ctx.save();
+        ctx.translate(b.x, b.y);
+
+        const bumpColor = b.color || '#38bdf8';
+        if (b.glow > 0.05) {
+          ctx.shadowColor = bumpColor;
+          ctx.shadowBlur = 24 * b.glow;
+        }
+
+        const bGrad = ctx.createRadialGradient(0, 0, 4, 0, 0, b.radius);
+        bGrad.addColorStop(0, '#ffffff');
+        bGrad.addColorStop(0.3, bumpColor);
+        bGrad.addColorStop(1, '#050c1f');
+
+        ctx.fillStyle = bGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = bumpColor;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('BẬT', 0, 0);
+
+        ctx.restore();
+      }
+
+      // Draw Pegs (Plinko pins)
+      for (const p of pegs) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+
+        if (p.glow > 0.05) {
+          ctx.shadowColor = '#ffd700';
+          ctx.shadowBlur = 15 * p.glow;
+        }
+
+        const isGold = p.type === 'gold';
+        const isNeon = p.type === 'neon';
+        const pGrad = ctx.createRadialGradient(-2, -2, 1, 0, 0, p.radius);
+        if (isGold) {
+          pGrad.addColorStop(0, '#ffffff');
+          pGrad.addColorStop(0.4, '#ffd700');
+          pGrad.addColorStop(1, '#b45309');
+        } else if (isNeon) {
+          pGrad.addColorStop(0, '#ffffff');
+          pGrad.addColorStop(0.4, '#00e5ff');
+          pGrad.addColorStop(1, '#0369a1');
+        } else {
+          pGrad.addColorStop(0, '#ffffff');
+          pGrad.addColorStop(0.5, '#cbd5e1');
+          pGrad.addColorStop(1, '#475569');
+        }
+
+        ctx.fillStyle = pGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      // Draw HUD Timer on Canvas (Top-Left)
+      {
+        ctx.save();
+        const timerX = 14;
+        const timerY = 14;
+        const timerW = 180;
+        const timerH = 75;
+
+        ctx.fillStyle = 'rgba(7, 13, 31, 0.88)';
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.45)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(timerX, timerY, timerW, timerH, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffd700';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('⏱️ ĐỒNG HỒ ĐUA', timerX + 10, timerY + 16);
+
+        let currentRemaining = targetDuration;
+        let progressRatio = 0;
+
+        if (raceState === 'racing') {
+          const now = performance.now();
+          const elapsed = (now - raceStartTime) / 1000;
+          currentRemaining = Math.max(0, targetDuration - elapsed);
+          progressRatio = Math.min(1, elapsed / targetDuration);
+        } else if (raceState === 'finished') {
+          currentRemaining = 0;
+          progressRatio = 1;
+        }
+
+        const isUrgent = raceState === 'racing' && currentRemaining <= 5.0 && currentRemaining > 0;
+
+        ctx.font = '900 20px monospace';
+        ctx.fillStyle = isUrgent ? '#ff2255' : (raceState === 'racing' ? '#ffd700' : '#38bdf8');
+        ctx.fillText(`${currentRemaining.toFixed(1)}s`, timerX + 10, timerY + 40);
+
+        ctx.font = '9px sans-serif';
+        ctx.fillStyle = isUrgent ? '#fca5a5' : '#94a3b8';
+        ctx.fillText(isUrgent ? `⚠️ SẮP HẾT GIỜ (${Math.ceil(currentRemaining)}s)` : `Mục tiêu: ${targetDuration}s`, timerX + 10, timerY + 54);
+
+        // Progress bar
+        const barX = timerX + 10;
+        const barY = timerY + 60;
+        const barW = timerW - 20;
+        const barH = 5;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.beginPath();
+        ctx.roundRect(barX, barY, barW, barH, 3);
+        ctx.fill();
+
+        if (progressRatio > 0) {
+          ctx.fillStyle = isUrgent ? '#ef4444' : '#00e5ff';
+          ctx.beginPath();
+          ctx.roundRect(barX, barY, Math.max(6, barW * progressRatio), barH, 3);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+
+      // Draw Marbles
+      for (const m of marbles) {
+        ctx.save();
+        ctx.translate(m.x, m.y);
+
+        // Marble shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.beginPath();
+        ctx.ellipse(2, 4, m.radius * 0.9, m.radius * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 3D Sphere Radial Gradient
+        const mGrad = ctx.createRadialGradient(
+          -m.radius * 0.35,
+          -m.radius * 0.35,
+          m.radius * 0.1,
+          0,
+          0,
+          m.radius
+        );
+        mGrad.addColorStop(0, '#ffffff');
+        mGrad.addColorStop(0.2, m.secondaryColor);
+        mGrad.addColorStop(0.8, m.color);
+        mGrad.addColorStop(1, '#050a18');
+
+        ctx.fillStyle = mGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, m.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Gold Rim
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Specular highlight dot
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.beginPath();
+        ctx.arc(-m.radius * 0.35, -m.radius * 0.35, m.radius * 0.22, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Name Tag Label above marble
+        ctx.font = 'bold 11px sans-serif';
+        const tagText = m.name;
+        const textWidth = ctx.measureText(tagText).width;
+        const tagPadding = 8;
+        const tagH = 18;
+        const tagW = textWidth + tagPadding * 2;
+        const tagY = -m.radius - 14;
+
+        // Tag Background
+        ctx.fillStyle = 'rgba(8, 14, 34, 0.88)';
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.7)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(-tagW / 2, tagY - tagH / 2, tagW, tagH, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        // Tag Text
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tagText, 0, tagY);
+
+        ctx.restore();
+      }
+
+      // Fireworks Particle System Layer (Top of game canvas)
+      fireworks.update();
+      fireworks.draw(ctx);
+
+      // Confetti
+      confetti.update();
+      confetti.draw(ctx);
+
+      ctx.restore(); // Restore screen shake transformation
+    }
+
+    function gameLoop() {
+      updatePhysics();
+      drawTrack();
+      requestAnimationFrame(gameLoop);
+    }
+
+    /* ==========================================================================
+       DOM INTERACTION & EVENT LISTENERS
+       ========================================================================== */
+    const sidePanel = document.getElementById('sidePanel');
+    const toggleNamesBtn = document.getElementById('toggleNamesBtn');
+    const closePanelBtn = document.getElementById('closePanelBtn');
+    const startRaceBtn = document.getElementById('startRaceBtn');
+    const musicBtn = document.getElementById('musicBtn');
+    const soundBtn = document.getElementById('soundBtn');
+    const speedBtn = document.getElementById('speedBtn');
+    const restartRaceBtn = document.getElementById('restartRaceBtn');
+    const removeWinnerBtn = document.getElementById('removeWinnerBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const sampleBtn = document.getElementById('sampleBtn');
+    const namesTextarea = document.getElementById('namesTextarea');
+
+    toggleNamesBtn.addEventListener('click', () => {
+      sidePanel.classList.toggle('open');
+    });
+    closePanelBtn.addEventListener('click', () => {
+      sidePanel.classList.remove('open');
+    });
+
+    startRaceBtn.addEventListener('click', () => {
+      sidePanel.classList.remove('open');
+      startRace();
+    });
+
+    musicBtn.addEventListener('click', () => {
+      sound.musicEnabled = !sound.musicEnabled;
+      musicBtn.innerText = sound.musicEnabled ? '🎵 Nhạc Đua: Bật' : '🎵 Nhạc Đua: Tắt';
+      if (!sound.musicEnabled) {
+        sound.stopBgm();
+      } else if (raceState === 'racing') {
+        sound.startBgm();
+      }
+    });
+
+    soundBtn.addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      soundBtn.innerText = sound.enabled ? '🔊 Âm Thanh: Bật' : '🔇 Âm Thanh: Tắt';
+    });
+
+    speedBtn.addEventListener('click', () => {
+      if (speedMultiplier === 1) speedMultiplier = 1.5;
+      else if (speedMultiplier === 1.5) speedMultiplier = 2;
+      else speedMultiplier = 1;
+      speedBtn.innerText = `⚡ Tốc Độ: ${speedMultiplier}x`;
+    });
+
+    // Time Duration selector listeners
+    const timeBtn = document.getElementById('timeBtn');
+    const timeMenu = document.getElementById('timeMenu');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const customSecInput = document.getElementById('customSecInput');
+    const applyCustomSecBtn = document.getElementById('applyCustomSecBtn');
+
+    timeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (raceState === 'racing' || raceState === 'countdown') return;
+      timeMenu.style.display = timeMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!timeMenu.contains(e.target) && e.target !== timeBtn) {
+        timeMenu.style.display = 'none';
+      }
+    });
+
+    document.querySelectorAll('.time-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sec = parseInt(btn.getAttribute('data-sec'), 10);
+        if (!isNaN(sec)) {
+          targetDuration = sec;
+          timeDisplay.innerText = `${sec}s`;
+          document.querySelectorAll('.time-opt-btn').forEach(b => b.classList.remove('btn-gold'));
+          btn.classList.add('btn-gold');
+          timeMenu.style.display = 'none';
+        }
+      });
+    });
+
+    applyCustomSecBtn.addEventListener('click', () => {
+      const val = parseInt(customSecInput.value, 10);
+      if (!isNaN(val) && val >= 5 && val <= 180) {
+        targetDuration = val;
+        timeDisplay.innerText = `${val}s`;
+        document.querySelectorAll('.time-opt-btn').forEach(b => b.classList.remove('btn-gold'));
+        customSecInput.value = '';
+        timeMenu.style.display = 'none';
+      }
+    });
+
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement) {
+        fullscreenBtn.innerText = '🗗 Thu Nhỏ';
+      } else {
+        fullscreenBtn.innerText = '🖥️ Toàn Màn Hình';
+      }
+      resizeCanvas();
+    });
+
+    // Keyboard shortcuts (Space = Start race, F = Fullscreen)
+    window.addEventListener('keydown', (e) => {
+      const activeTag = (document.activeElement?.tagName || '').toLowerCase();
+      if (activeTag === 'textarea' || activeTag === 'input') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (raceState === 'idle' || raceState === 'finished') {
+          sidePanel.classList.remove('open');
+          startRace();
+        }
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (!e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        }
+      }
+    });
+
+    restartRaceBtn.addEventListener('click', () => {
+      document.getElementById('winnerModal').classList.remove('show');
+      startRace();
+    });
+
+    removeWinnerBtn.addEventListener('click', () => {
+      if (!winner) return;
+      const currentNames = getStudentNames();
+      const filtered = currentNames.filter(n => n.toLowerCase() !== winner.name.toLowerCase());
+      namesTextarea.value = filtered.join('\n');
+      document.getElementById('studentCount').innerText = filtered.length;
+      document.getElementById('winnerModal').classList.remove('show');
+      setupMarbles();
+      updateStatusBadge(`Đã loại: ${winner.name}. Còn lại ${filtered.length} em.`);
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+      const arr = getStudentNames();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      namesTextarea.value = arr.join('\n');
+      setupMarbles();
+    });
+
+    sampleBtn.addEventListener('click', () => {
+      namesTextarea.value = `Nguyễn Hoàng Long\nTrần Thị Mai Anh\nLê Đức Minh\nPhạm Thuỳ Trang\nVũ Gia Huy\nĐặng Ngọc Bảo\nBùi Khánh Linh`;
+      setupMarbles();
+    });
+
+    namesTextarea.addEventListener('input', () => {
+      setupMarbles();
+    });
+
+    // Initial setup
+    resizeCanvas();
+    initTrackObstacles();
+    setupMarbles();
+    requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>
